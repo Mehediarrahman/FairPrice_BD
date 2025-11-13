@@ -16,4 +16,5 @@ class User(AbstractUser):
     
     def str(self):
         return f"{self.username} - {self.role}"
-# Create your models here.
+# Create your models here(model done).
+#upload
