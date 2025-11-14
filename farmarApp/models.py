@@ -18,10 +18,10 @@ class Region(models.Model):
 
 
 class FieldAgent(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
     region = models.ForeignKey(Region, null=True, on_delete=models.SET_NULL)
-    phone = models.CharField(max_length=20)
-    status = models.CharField(max_length=20, default="Active")
+    phone = models.CharField(max_length=20,null=True)
+    status = models.CharField(max_length=20, null=True, default="Active")
     joined_date = models.DateField(auto_now_add=True)
 
     def __str__(self):
@@ -52,9 +52,9 @@ class FieldAgentAssignment(models.Model):
 
 
 class Crop(models.Model):
-    name = models.CharField(max_length=200)
-    season = models.CharField(max_length=100)
-    unit = models.CharField(max_length=50)
+    name = models.CharField(max_length=200,null=True)
+    season = models.CharField(max_length=100,null=True)
+    unit = models.CharField(max_length=50,null=True)
 
     def __str__(self):
         return self.name
@@ -70,9 +70,9 @@ class FarmRecord(models.Model):
     crop = models.ForeignKey(Crop, on_delete=models.CASCADE)
     field_agent = models.ForeignKey(FieldAgent, null=True, on_delete=models.SET_NULL)
     region = models.ForeignKey(Region, null=True, on_delete=models.SET_NULL)
-    land_area = models.FloatField()
-    expected_yield = models.FloatField()
-    harvest_date = models.DateField()
+    land_area = models.FloatField(null=True)
+    expected_yield = models.FloatField(null=True)
+    harvest_date = models.DateField(null=True)
     status = models.CharField(max_length=20, choices=STATUS, default="growing")
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -91,8 +91,8 @@ class CropExpense(models.Model):
     )
 
     farm_record = models.ForeignKey(FarmRecord, on_delete=models.CASCADE)
-    category = models.CharField(max_length=50, choices=CATEGORY)
-    amount = models.FloatField()
+    category = models.CharField(max_length=50, choices=CATEGORY,null=True)
+    amount = models.FloatField(null=True)
     note = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 

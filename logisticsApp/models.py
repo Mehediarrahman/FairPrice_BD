@@ -1,11 +1,11 @@
 from django.db import models
-from warehouseApp.models import StockOut
-from retailerApp.models import RetailerProfile
+from warehouseApp.models import*
+from retailerApp.models import *
 
 class Transport(models.Model):
-    company_name = models.CharField(max_length=100)
-    vehicle_number = models.CharField(max_length=20)
-    driver_details = models.TextField()
+    company_name = models.CharField(max_length=100,null=True)
+    vehicle_number = models.CharField(max_length=20,null=True)
+    driver_details = models.TextField(null=True)
     
     def str(self):
         return f"{self.company_name} - {self.vehicle_number}"
@@ -18,13 +18,13 @@ class DeliveryChalan(models.Model):
         ('cancelled', 'Cancelled'),
     )
     
-    transport = models.ForeignKey(Transport, on_delete=models.CASCADE)
-    stock_out = models.OneToOneField(StockOut, on_delete=models.CASCADE)
-    source_warehouse = models.ForeignKey('warehouseapp.WarehouseProfile', on_delete=models.CASCADE)
-    destination_retailer = models.ForeignKey(RetailerProfile, on_delete=models.CASCADE)
-    dispatch_time = models.DateTimeField()
+    transport = models.ForeignKey(Transport, on_delete=models.CASCADE,null=True)
+    stock_out = models.OneToOneField(StockOut, on_delete=models.CASCADE,null=True)
+    source_warehouse = models.ForeignKey('warehouseapp.WarehouseProfile', on_delete=models.CASCADE,null=True)
+    destination_retailer = models.ForeignKey(RetailerProfile, on_delete=models.CASCADE,null=True)
+    dispatch_time = models.DateTimeField(null=True)
     received_time = models.DateTimeField(null=True, blank=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='dispatched')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='dispatched',null=True)
     
     def str(self):
         return f"DeliveryChalan - {self.stock_out.id}"
