@@ -31,7 +31,7 @@ class FieldAgent(models.Model):
 class Farmer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE,null=True)
     name = models.CharField(max_length=20,null=True)
-    nid_number = models.IntegerField(,null=True)
+    nid_number = models.IntegerField(null=True)
     phone = models.CharField(max_length=50,null=True)
     region = models.ForeignKey(Region, on_delete=models.CASCADE,null=True,null=True)
     field_agent_assignment = models.ForeignKey(FieldAgent , on_delete=models.CASCADE,null=True,null=True)
