@@ -16,9 +16,15 @@ class MarketScan(models.Model):
         return self.product.name
     
 class PriceSnapshot(models.Model):
+    STATUS_CHOICES = (
+        ('Pending', 'Pending'),
+        ('Approved', 'Approved'),
+        ('Rejected', 'Rejected'),
+    )
     product = models.ForeignKey(Product, on_delete=models.CASCADE,null=True)
     region = models.ForeignKey(Region, on_delete=models.CASCADE,null=True)
     average_price = models.DecimalField(max_digits=10, decimal_places=2,null=True)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Pending')
     date = models.DateField(auto_now_add=True)
 
     def __str__(self):

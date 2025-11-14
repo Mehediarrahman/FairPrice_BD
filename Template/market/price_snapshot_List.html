@@ -1,0 +1,25 @@
+<h2>Price Snapshot List</h2>
+
+<table border="1">
+    <tr>
+        <th>Product</th>
+        <th>Region</th>
+        <th>Average Price</th>
+        <th>Date</th>
+        <th>status</th>
+    </tr>
+
+    {% for s in snapshots %}
+    <tr>
+        <td>{{ s.product.name }}</td>
+        <td>{{ s.region.name }}</td>
+        <td>{{ s.average_price }}</td>
+        
+        <td>{{ s.date }}</td>
+        <td>
+            <a href="{% ur 'Approved' s.id %}">Approved</a>
+            <a href="{% ur 'Rejected' s.id %}">Rejected</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
