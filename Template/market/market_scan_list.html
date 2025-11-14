@@ -1,0 +1,21 @@
+<h2>Market Scan List</h2>
+
+<table border="1">
+    <tr>
+        <th>Product</th>
+        <th>Region</th>
+        <th>Price</th>
+        <th>Agent</th>
+        <th>Time</th>
+    </tr>
+
+    {% for s in scans %}
+    <tr>
+        <td>{{ s.product.name }}</td>
+        <td>{{ s.region.name }}</td>
+        <td>{{ s.observed_price }}</td>
+        <td>{{ s.field_agent.name }}</td>
+        <td>{{ s.timestamp }}</td>
+    </tr>
+    {% endfor %}
+</table>
