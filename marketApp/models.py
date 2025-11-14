@@ -30,7 +30,3 @@ class PriceSnapshot(models.Model):
     def __str__(self):
         return f'{self.product.name}-{self.region.name}'
 
-class APIToken(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    token = models.CharField(max_length=255)
-    expires_at = models.DateTimeField()
