@@ -1,95 +1,100 @@
 from django.db import models
-from accountsApp.models import *
+from django.contrib.auth.models import User
 
-class Crop(models.Model):
-    name = models.CharField(max_length=100,null=True)  
-    season = models.CharField(max_length=50,null=True)
-    
-    def str(self):
-        return f"{self.name} - {self.season}"
-    
+
+class Region(models.Model):
+    REGION_TYPES = (
+        ('division', 'Division'),
+        ('district', 'District'),
+        ('upazila', 'Upazila'),
+    )
+
+    name = models.CharField(max_length=200)
+    parent_region = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL)
+    region_type = models.CharField(max_length=20, choices=REGION_TYPES)
+
+    def __str__(self):
+        return self.name
+
 
 class FieldAgent(models.Model):
-    Status=[
-        ('Active','Active'),    
-        ('Inactive','Inactive'),    
-    ]
-    user = models.OneToOneField(User, on_delete=models.CASCADE,null=True)
-    name = models.CharField(max_length=150,null=True)
-    region = models.ForeignKey(Region, on_delete=models.CASCADE,null=True,null=True)
-    phone = models.CharField(max_length=50,null=True)
-    status = models.CharField(choices=Status, max_length=50,null=True)
-    joined_date = models.DateField(auto_now_add=True,null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    region = models.ForeignKey(Region, null=True, on_delete=models.SET_NULL)
+    phone = models.CharField(max_length=20)
+    status = models.CharField(max_length=20, default="Active")
+    joined_date = models.DateField(auto_now_add=True)
 
-    def str(self):
-        return f"{self.name} - {self.status}"
-
-
-
+    def __str__(self):
+        return self.user.get_full_name()
 
 
 class Farmer(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE,null=True)
-    name = models.CharField(max_length=20,null=True)
-    nid_number = models.IntegerField(null=True)
-    phone = models.CharField(max_length=50,null=True)
-    region = models.ForeignKey(Region, on_delete=models.CASCADE,null=True,null=True)
-    field_agent_assignment = models.ForeignKey(FieldAgent , on_delete=models.CASCADE,null=True,null=True)
-    created_at = models.DateField(auto_now_add=True,null=True)
-    
-    
-    def str(self):
-        return f"{self.user.username} - {self.region}"
+    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
+    name = models.CharField(max_length=200)
+    nid_number = models.CharField(max_length=100)
+    phone = models.CharField(max_length=20)
+    region = models.ForeignKey(Region, null=True, on_delete=models.SET_NULL)
+    field_agent_assignment = models.ForeignKey('FieldAgentAssignment', null=True, blank=True, on_delete=models.SET_NULL)
+    created_at = models.DateTimeField(auto_now_add=True)
 
-class FarmRecord(models.Model):
-    Status=[
-        ('Growing','Growing'),    
-        ('Harvested','Harvested'),    
-        ('etc','etc'),    
-    ]
-    farmer = models.ForeignKey(Farmer, on_delete=models.CASCADE,null=True)
-    crop = models.ForeignKey(Crop, on_delete=models.CASCADE,null=True)
-    field_agent_assignment = models.ForeignKey(FieldAgent , on_delete=models.CASCADE,null=True,null=True)
-    region = models.ForeignKey(Region, on_delete=models.CASCADE,null=True,null=True)
-    land_area = models.DecimalField(max_digits=5, decimal_places=2,null=True)
-    expected_yield = models.DecimalField(max_digits=5, decimal_places=2,null=True)
-    harvest_date = models.DateField(auto_now_add=True,null=True)
-    status = models.CharField(choices=Status, max_length=50,null=True)
-    created_at = models.DateField(auto_now_add=True,null=True)
-    
-    
-    def str(self):
-        return f"{self.farmer.user.username} - {self.crop.name}"
-    
+    def __str__(self):
+        return self.name
 
-class CropExpense(models.Model):
-    Expense=[
-        ('Seed','Seed'),
-        ('Fertilizer','Fertilizer'),
-        ('Labor','Labor'),
-        ('Pesticide','Pesticide'),
-        ('iIrrigation','iIrrigation'),
-        ('etc','etc'),
-
-    ]
-    farm_record = models.ForeignKey(FarmRecord, on_delete=models.CASCADE,null=True)
-    category = models.CharField(choices=Expense, max_length=50,null=True)
-    amount = models.DecimalField(max_digits=5, decimal_places=2,null=True)
-    note = models.CharField(max_length=250,null=True)
-    created_at = models.DateField(auto_now_add=True,null=True)
-
-    def str(self):
-        return f"{self.farm_record.farmer.user.username} - {self.season}"
 
 class FieldAgentAssignment(models.Model):
-    Status=[
-        ('Active','Active'),    
-        ('Completed','Completed'),   
-    ]
-    field_agent = models.ForeignKey(FieldAgent, on_delete=models.CASCADE,null=True)
-    farmer = models.ForeignKey(Farmer, on_delete=models.CASCADE,null=True)
-    assigned_date = models.DateField(auto_now_add=True,null=True)
-    status = models.CharField(choices=Status, max_length=50,null=True)
+    field_agent = models.ForeignKey(FieldAgent, on_delete=models.CASCADE)
+    farmer = models.ForeignKey(Farmer, on_delete=models.CASCADE)
+    assigned_date = models.DateField(auto_now_add=True)
+    status = models.CharField(max_length=20, default="active")
 
-    def str(self):
-        return f"{self.field_agent.name} - {self.status}"
+    def __str__(self):
+        return f"{self.field_agent} → {self.farmer}"
+
+
+class Crop(models.Model):
+    name = models.CharField(max_length=200)
+    season = models.CharField(max_length=100)
+    unit = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
+
+class FarmRecord(models.Model):
+    STATUS = (
+        ('growing', 'Growing'),
+        ('harvested', 'Harvested'),
+        ('completed', 'Completed'),
+    )
+    farmer = models.ForeignKey(Farmer, on_delete=models.CASCADE)
+    crop = models.ForeignKey(Crop, on_delete=models.CASCADE)
+    field_agent = models.ForeignKey(FieldAgent, null=True, on_delete=models.SET_NULL)
+    region = models.ForeignKey(Region, null=True, on_delete=models.SET_NULL)
+    land_area = models.FloatField()
+    expected_yield = models.FloatField()
+    harvest_date = models.DateField()
+    status = models.CharField(max_length=20, choices=STATUS, default="growing")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.farmer} - {self.crop}"
+
+
+class CropExpense(models.Model):
+    CATEGORY = (
+        ('seed', 'Seed'),
+        ('fertilizer', 'Fertilizer'),
+        ('labor', 'Labor'),
+        ('pesticide', 'Pesticide'),
+        ('irrigation', 'Irrigation'),
+        ('other', 'Other'),
+    )
+
+    farm_record = models.ForeignKey(FarmRecord, on_delete=models.CASCADE)
+    category = models.CharField(max_length=50, choices=CATEGORY)
+    amount = models.FloatField()
+    note = models.TextField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.farm_record} - {self.category}"
