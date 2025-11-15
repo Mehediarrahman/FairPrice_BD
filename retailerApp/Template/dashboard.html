@@ -1,0 +1,133 @@
+{% extends 'retailerApp/base.html' %}
+
+{% block title %}Retailer Dashboard{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <h1 class="mb-4">
+            <i class="fas fa-tachometer-alt"></i> Retailer Dashboard
+        </h1>
+    </div>
+    <div class="col-md-4 text-end">
+        {% if not retailer_profile %}
+            <a href="{% url 'retailerApp:create_retailer_profile' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Create Profile
+            </a>
+        {% else %}
+            <a href="{% url 'retailerApp:update_retailer_profile' %}" class="btn btn-outline-primary">
+                <i class="fas fa-edit"></i> Edit Profile
+            </a>
+        {% endif %}
+    </div>
+</div>
+
+{% if retailer_profile %}
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-store"></i> Shop Information
+                </h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Shop Name:</strong> {{ retailer_profile.shop_name }}</p>
+                <p><strong>Region:</strong> {{ retailer_profile.region.name }}</p>
+                <p><strong>Field Agent:</strong> {{ retailer_profile.field_agent.name }}</p>
+                <p><strong>Phone:</strong> {{ retailer_profile.phone }}</p>
+                <p><strong>Status:</strong> 
+                    <span class="badge bg-{% if retailer_profile.status == 'Active' %}success{% else %}warning{% endif %}">
+                        {{ retailer_profile.status }}
+                    </span>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-chart-line"></i> Quick Stats
+                </h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Total Products Priced:</strong> {{ product_prices.count }}</p>
+                <p><strong>Verified Prices:</strong> {{ product_prices|length }}</p>
+                <a href="{% url 'retailerApp:create_product_price' %}" class="btn btn-success btn-sm">
+                    <i class="fas fa-plus"></i> Add New Price
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header bg-info text-white">
+        <h5 class="card-title mb-0">
+            <i class="fas fa-list"></i> My Product Prices
+        </h5>
+    </div>
+    <div class="card-body">
+        {% if product_prices %}
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Crop</th>
+                        <th>Price</th>
+                        <th>Verified</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for price in product_prices %}
+                    <tr>
+                        <td>{{ price.product.name }}</td>
+                        <td>{{ price.crop.name }}</td>
+                        <td>${{ price.price }}</td>
+                        <td>
+                            {% if price.verified %}
+                                <span class="badge bg-success">Yes</span>
+                            {% else %}
+                                <span class="badge bg-warning">No</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ price.created_at }}</td>
+                        <td>
+                            <a href="{% url 'retailerApp:update_product_price' price.pk %}" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="{% url 'retailerApp:delete_product_price' price.pk %}" class="btn btn-sm btn-outline-danger">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-4">
+            <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+            <h5>No product prices yet</h5>
+            <p class="text-muted">Start by adding your first product price</p>
+            <a href="{% url 'retailerApp:create_product_price' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Add Product Price
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% else %}
+<div class="alert alert-warning text-center">
+    <h4>Welcome to Retailer App!</h4>
+    <p>You need to create a retailer profile to start using the application.</p>
+    <a href="{% url 'retailerApp:create_retailer_profile' %}" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Create Retailer Profile
+    </a>
+</div>
+{% endif %}
+{% endblock %}
