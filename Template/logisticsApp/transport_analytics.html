@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+
+{% block title %}Transport Analytics{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-chart-bar"></i> Transport Cost Analytics</h2>
+        <div>
+            <a href="{% url 'logisticsapp:trip_list' %}" class="btn btn-info">
+                <i class="fas fa-list"></i> View Trips
+            </a>
+            <a href="{% url 'logisticsapp:logistics_dashboard' %}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Dashboard
+            </a>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0"><i class="fas fa-info-circle"></i> Analytics Overview</h5>
+        </div>
+        <div class="card-body">
+            <p class="mb-0">
+                This analysis shows average transport costs per kilogram for different routes and products.
+                Use this data to calculate fair pricing by adding transport costs to base product prices.
+            </p>
+        </div>
+    </div>
+
+    {% if route_analytics %}
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="fas fa-table"></i> Route-wise Transport Cost Analysis</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Route</th>
+                            <th>Product</th>
+                            <th>Total Trips</th>
+                            <th>Total Quantity (kg)</th>
+                            <th>Avg Cost per kg (BDT)</th>
+                            <th>Fair Price Impact</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for analytics in route_analytics %}
+                        <tr>
+                            <td>
+                                <strong>{{ analytics.origin_region__name }}</strong> 
+                                <i class="fas fa-arrow-right mx-2 text-muted"></i>
+                                <strong>{{ analytics.destination_region__name }}</strong>
+                            </td>
+                            <td>
+                                <span class="badge bg-success">{{ analytics.product__name }}</span>
+                            </td>
+                            <td>{{ analytics.total_trips }}</td>
+                            <td>{{ analytics.total_quantity|floatformat:2 }}</td>
+                            <td>
+                                <span class="badge bg-primary fs-6">৳{{ analytics.avg_cost_per_kg|floatformat:2 }}</span>
+                            </td>
+                            <td>
+                                <span class="badge {% if analytics.avg_cost_per_kg < 5 %}bg-success{% elif analytics.avg_cost_per_kg < 10 %}bg-warning{% else %}bg-danger{% endif %}">
+                                    {% if analytics.avg_cost_per_kg < 5 %}Low Impact {% elif analytics.avg_cost_per_kg < 10 %}Medium Impact {% else %}High Impact {% endif %} </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mt-4">
+        <div class="card-header bg-info text-white">
+            <h5 class="mb-0"><i class="fas fa-lightbulb"></i> How to Use This Data</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h6>For Price Calculation:</h6>
+                    <ul>
+                        <li><strong>Base Product Price</strong> + <strong>Transport Cost per kg</strong> = Fair Retail Price</li>
+                        <li>Example: Rice (৳30/kg) + Transport (৳2.5/kg) = ৳32.5/kg Fair Price</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h6>For Decision Making:</h6>
+                    <ul>
+                        <li>Identify high-cost routes for optimization</li>
+                        <li>Compare transport costs across different products</li>
+                        <li>Monitor cost trends over time</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="card">
+        <div class="card-body text-center py-5">
+            <i class="fas fa-chart-bar fa-4x text-muted mb-3"></i>
+            <h4>No Analytics Data Available</h4>
+            <p class="text-muted">Start logging transport trips to generate analytics.</p>
+            <a href="{% url 'logisticsapp:add_trip' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Log First Trip
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    .table th {
+        border-top: none;
+        font-weight: 600;
+    }
+    .badge.fs-6 {
+        font-size: 0.9em !important;
+    }
+</style>
+{% endblock %}

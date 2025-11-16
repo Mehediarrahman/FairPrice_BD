@@ -1,6 +1,6 @@
 
 from django.contrib import admin
-from django.urls import path , include
+from django.urls import path,include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -8,5 +8,7 @@ urlpatterns = [
     # path("market/", include("marketApp.urls")),
     path("farmar/", include("farmarApp.urls")),
     path("auth/", include("accountsApp.urls")),
+    path("market/", include("marketApp.urls")),
+    path('logisticsApp/', include('logicticsApp.urls')),
 
 ]

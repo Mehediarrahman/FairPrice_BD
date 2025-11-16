@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}Logistics Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Transport & Logistics Dashboard</h2>
+    
+    <div class="row mt-4">
+        <div class="col-md-3">
+            <div class="card text-white bg-primary">
+                <div class="card-body">
+                    <h5 class="card-title">{{ total_transporters }}</h5>
+                    <p class="card-text">Total Transporters</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-success">
+                <div class="card-body">
+                    <h5 class="card-title">{{ active_transporters }}</h5>
+                    <p class="card-text">Active Transporters</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-info">
+                <div class="card-body">
+                    <h5 class="card-title">{{ total_trips }}</h5>
+                    <p class="card-text">Total Trips</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-warning">
+                <div class="card-body">
+                    <h5 class="card-title">৳{{ avg_cost_per_kg|floatformat:2 }}</h5>
+                    <p class="card-text">Avg Cost per kg</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <a href="{% url 'logisticsapp:add_transporter' %}" class="btn btn-primary">Add Transporter</a>
+                    <a href="{% url 'logisticsapp:add_trip' %}" class="btn btn-success">Log Transport Trip</a>
+                    <a href="{% url 'logisticsapp:transporter_list' %}" class="btn btn-info">View Transporters</a>
+                    <a href="{% url 'logisticsapp:trip_list' %}" class="btn btn-warning">View Trips</a>
+                    <a href="{% url 'logisticsapp:transport_analytics' %}" class="btn btn-secondary">View Analytics</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
