@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Warehouse-wise Average Monthly Cost</h2>
+    <table class="table table-bordered table-hover">
+        <thead class="table-light">
+            <tr>
+                <th>#</th>
+                <th>Warehouse</th>
+                <th>Average Monthly Cost (৳)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in warehouse_data %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ item.warehouse.name }}</td>
+                <td>{{ item.avg_cost|floatformat:2 }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3" class="text-center">No data available.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

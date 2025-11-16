@@ -27,10 +27,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'accountsApp',
-    'farmarApp',
-    'publicApp',
+    # 'farmarApp',
+    # 'publicApp',
     # 'logisticsApp',
-    # 'marketApp',
+    'marketApp',
     # 'retailerApp',
     # 'warehouseApp',
 ]
