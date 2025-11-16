@@ -1,5 +1,6 @@
 from django.db import models
 from accountsApp.models import *
+from logisticsApp.models import Region
 
 class Crop(models.Model):
     name = models.CharField(max_length=100,null=True)  
@@ -16,7 +17,7 @@ class FieldAgent(models.Model):
     ]
     user = models.OneToOneField(User, on_delete=models.CASCADE,null=True)
     name = models.CharField(max_length=150,null=True)
-    region = models.ForeignKey(Region, on_delete=models.CASCADE,null=True,null=True)
+    region = models.ForeignKey(Region, on_delete=models.CASCADE,null=True,blank=True)
     phone = models.CharField(max_length=50,null=True)
     status = models.CharField(choices=Status, max_length=50,null=True)
     joined_date = models.DateField(auto_now_add=True,null=True)
@@ -33,8 +34,8 @@ class Farmer(models.Model):
     name = models.CharField(max_length=20,null=True)
     nid_number = models.IntegerField(null=True)
     phone = models.CharField(max_length=50,null=True)
-    region = models.ForeignKey(Region, on_delete=models.CASCADE,null=True,null=True)
-    field_agent_assignment = models.ForeignKey(FieldAgent , on_delete=models.CASCADE,null=True,null=True)
+    region = models.ForeignKey(Region, on_delete=models.CASCADE,null=True,blank=True)
+    field_agent_assignment = models.ForeignKey(FieldAgent,on_delete=models.CASCADE,null=True,blank=True)
     created_at = models.DateField(auto_now_add=True,null=True)
     
     
@@ -49,8 +50,8 @@ class FarmRecord(models.Model):
     ]
     farmer = models.ForeignKey(Farmer, on_delete=models.CASCADE,null=True)
     crop = models.ForeignKey(Crop, on_delete=models.CASCADE,null=True)
-    field_agent_assignment = models.ForeignKey(FieldAgent , on_delete=models.CASCADE,null=True,null=True)
-    region = models.ForeignKey(Region, on_delete=models.CASCADE,null=True,null=True)
+    field_agent_assignment = models.ForeignKey(FieldAgent , on_delete=models.CASCADE,null=True,blank=True)
+    region = models.ForeignKey(Region, on_delete=models.CASCADE,null=True,blank=True)
     land_area = models.DecimalField(max_digits=5, decimal_places=2,null=True)
     expected_yield = models.DecimalField(max_digits=5, decimal_places=2,null=True)
     harvest_date = models.DateField(auto_now_add=True,null=True)
