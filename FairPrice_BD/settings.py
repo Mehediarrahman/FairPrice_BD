@@ -28,10 +28,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accountsApp',
     'farmarApp',
-    'logisticsApp',
-    'marketApp',
-    'retailerApp',
-    'warehouseApp',
+    'publicApp',
+    # 'logisticsApp',
+    # 'marketApp',
+    # 'retailerApp',
+    # 'warehouseApp',
 ]
 
 MIDDLEWARE = [
@@ -116,3 +117,5 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'accountsApp.User'
+
+LOGIN_URL = '/auth/login/'

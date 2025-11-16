@@ -1,0 +1,62 @@
+{% extends "layout/base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block body %}
+<div class="home-container">
+    <h1>Welcome to FairPrice BD</h1>
+    <p>Your one-stop solution for managing farmers, warehouses, and retailers efficiently.</p>
+
+    <div class="buttons">
+        {% if user.is_authenticated %}
+            <a href="#" class="btn">Go to Dashboard</a>
+        {% else %}
+            <a href="{% url 'login' %}" class="btn">Login</a>
+            <a href="{% url 'register' %}" class="btn btn-secondary">Register</a>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .home-container {
+        text-align: center;
+        padding: 60px 20px;
+    }
+
+    .home-container h1 {
+        font-size: 36px;
+        color: #0066ff;
+        margin-bottom: 20px;
+    }
+
+    .home-container p {
+        font-size: 18px;
+        color: #444;
+        margin-bottom: 30px;
+    }
+
+    .buttons a {
+        display: inline-block;
+        margin: 5px 10px;
+        padding: 12px 25px;
+        font-size: 16px;
+        text-decoration: none;
+        color: #fff;
+        border-radius: 6px;
+        background-color: #0066ff;
+        transition: background 0.3s ease;
+    }
+
+    .buttons a:hover {
+        background-color: #004fcc;
+    }
+
+    .btn-secondary {
+        background-color: #28a745;
+    }
+
+    .btn-secondary:hover {
+        background-color: #1e7e34;
+    }
+</style>
+{% endblock %}
