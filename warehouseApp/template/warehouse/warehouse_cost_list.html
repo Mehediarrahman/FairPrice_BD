@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Warehouse Costs</h2>
+    <a href="{% url 'warehouse_cost_create' %}" class="btn btn-primary mb-3">Add Cost Entry</a>
+    <table class="table table-bordered table-hover">
+        <thead class="table-light">
+            <tr>
+                <th>#</th>
+                <th>Warehouse</th>
+                <th>Field Agent</th>
+                <th>Month</th>
+                <th>Rent</th>
+                <th>Handling</th>
+                <th>Electricity</th>
+                <th>Wastage</th>
+                <th>Misc</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cost in costs %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ cost.warehouse.name }}</td>
+                <td>{{ cost.field_agent.user.username }}</td>
+                <td>{{ cost.month }}</td>
+                <td>{{ cost.rent_cost }}</td>
+                <td>{{ cost.handling_cost }}</td>
+                <td>{{ cost.electricity_cost }}</td>
+                <td>{{ cost.wastage_loss }}</td>
+                <td>{{ cost.misc_cost }}</td>
+                <td>
+                    <a href="{% url 'warehouse_cost_edit' cost.id %}" class="btn btn-sm btn-warning">Edit</a>
+                    <a href="{% url 'warehouse_cost_delete' cost.id %}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="10" class="text-center">No cost entries found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

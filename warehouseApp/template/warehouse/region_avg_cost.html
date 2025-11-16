@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Region-wise Average Warehouse Cost</h2>
+    <table class="table table-bordered table-hover">
+        <thead class="table-light">
+            <tr>
+                <th>#</th>
+                <th>Region</th>
+                <th>Average Cost (৳)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for region in regional_costs %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ region.warehouse__region__name }}</td>
+                <td>{{ region.avg_cost|floatformat:2 }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3" class="text-center">No data available.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

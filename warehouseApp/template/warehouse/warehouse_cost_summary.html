@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Warehouse Cost Summary</h2>
+
+    <!-- Warehouse-wise Total Cost -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5>Warehouse-wise Cost Details</h5>
+        </div>
+        <div class="card-body table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Warehouse</th>
+                        <th>Region</th>
+                        <th>Capacity (tons)</th>
+                        <th>Total Cost (৳)</th>
+                        <th>Cost per Ton (৳)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in data %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ item.warehouse.name }}</td>
+                        <td>{{ item.region }}</td>
+                        <td>{{ item.capacity }}</td>
+                        <td>{{ item.total_cost }}</td>
+                        <td>{{ item.cost_per_ton }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center">No warehouse data available.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Region-wise Average Cost -->
+    <div class="card">
+        <div class="card-header bg-success text-white">
+            <h5>Region-wise Average Cost per Ton</h5>
+        </div>
+        <div class="card-body table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Region</th>
+                        <th>Average Cost per Ton (৳)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for region in region_avg %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ region.region__name }}</td>
+                        <td>{{ region.avg_cost_per_ton|floatformat:2 }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" class="text-center">No region data available.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

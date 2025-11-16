@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <h2>{% if edit %}Edit{% else %}Add{% endif %} Warehouse Cost</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-success">{% if edit %}Update{% else %}Save{% endif %}</button>
+        <a href="{% url 'warehouse_cost_list' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}
