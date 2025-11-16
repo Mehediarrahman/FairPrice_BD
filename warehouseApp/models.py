@@ -1,34 +1,51 @@
 from django.db import models
 from accountsApp.models import User
-from farmarApp.models import FarmerProfile, Crop
+from farmarApp.models import *
 
-class WarehouseProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    license_number = models.CharField(max_length=50)
-    storage_capacity = models.DecimalField(max_digits=12, decimal_places=2)
-    location = models.CharField(max_length=100)
-    
-    def str(self):
-        return f"{self.user.username} - {self.location}"
 
-class StockIn(models.Model):
-    warehouse = models.ForeignKey(WarehouseProfile, on_delete=models.CASCADE)
-    farmer = models.ForeignKey(FarmerProfile, on_delete=models.CASCADE)
-    crop = models.ForeignKey(Crop, on_delete=models.CASCADE)
-    quantity = models.DecimalField(max_digits=10, decimal_places=2)
-    purchase_price_per_kg = models.DecimalField(max_digits=8, decimal_places=2)
-    datetime = models.DateTimeField(auto_now_add=True)
-    
-    def str(self):
-        return f"StockIn - {self.crop.name} - {self.quantity}kg"
+class Warehouse(models.Model):
+    STATUS_CHOICES = (
+        ('active', 'Active'),
+        ('inactive', 'Inactive'),
+    )
 
-class StockOut(models.Model):
-    warehouse = models.ForeignKey(WarehouseProfile, on_delete=models.CASCADE)
-    retailer = models.ForeignKey('retailerapp.RetailerProfile', on_delete=models.CASCADE)
-    stock_in = models.ForeignKey(StockIn, on_delete=models.CASCADE)
-    quantity = models.DecimalField(max_digits=10, decimal_places=2)
-    selling_price_per_kg = models.DecimalField(max_digits=8, decimal_places=2)
-    datetime = models.DateTimeField(auto_now_add=True)
-    
-    def str(self):
-        return f"StockOut - {self.stock_in.crop.name} - {self.quantity}kg"
+    name = models.CharField(max_length=200)
+    region = models.ForeignKey(Region, on_delete=models.CASCADE, related_name='warehouses')
+    capacity = models.FloatField(help_text="Capacity in tons")
+    field_agent = models.ForeignKey(FieldAgent, on_delete=models.SET_NULL, null=True, blank=True)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='active')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
+
+
+class WarehouseCost(models.Model):
+    warehouse = models.ForeignKey(Warehouse, on_delete=models.CASCADE, related_name='costs')
+    field_agent = models.ForeignKey(FieldAgent, on_delete=models.SET_NULL, null=True, blank=True)
+    month = models.DateField(help_text="Use any date inside the month")
+
+    rent_cost = models.FloatField(default=0)
+    handling_cost = models.FloatField(default=0)
+    electricity_cost = models.FloatField(default=0)
+    wastage_loss = models.FloatField(default=0)
+    misc_cost = models.FloatField(default=0)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-month']
+        unique_together = ('warehouse', 'month')  # Prevent double-entry for same month
+
+    def __str__(self):
+        return f"{self.warehouse.name} - {self.month.strftime('%B %Y')}"
+
+    @property
+    def total_cost(self):
+        return (
+            self.rent_cost +
+            self.handling_cost +
+            self.electricity_cost +
+            self.wastage_loss +
+            self.misc_cost
+        )

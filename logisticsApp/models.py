@@ -1,5 +1,5 @@
 from django.db import models
-from warehouseApp.models import*
+from warehouseApp.models import *
 from retailerApp.models import *
 
 class Transport(models.Model):
